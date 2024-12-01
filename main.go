@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/FractalBoy/advent-of-code-2024/aoc"
+	"github.com/FractalBoy/advent-of-code-2024/solutions"
 )
 
 var dayNum = flag.Int("day", 0, "The day to execute")
@@ -22,7 +23,7 @@ func main() {
 
 	var days map[int]aoc.Day = make(map[int]aoc.Day)
 
-	days[1] = Day1{}
+	days[1] = solutions.Day1{}
 
 	day, ok := days[*dayNum]
 
