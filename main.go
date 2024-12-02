@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"reflect"
 
 	"github.com/FractalBoy/advent-of-code-2024/aoc"
 	"github.com/FractalBoy/advent-of-code-2024/solutions"
@@ -40,10 +41,28 @@ func main() {
 	}
 
 	if *part1 {
-		println(day.Part1(input))
+		executePart(day, 1, input)
 	}
 
 	if *part2 {
-		println(day.Part2(input))
+		executePart(day, 2, input)
+	}
+}
+
+func executePart(day aoc.Day, part int, input string) {
+	method := reflect.ValueOf(day).MethodByName(fmt.Sprintf("Part%d", part))
+
+	out := method.Call([]reflect.Value{reflect.ValueOf(input)})
+
+	solution := out[0].String()
+	err := out[1].Interface()
+
+	if err == nil {
+		println(solution)
+	} else {
+		err := err.(error)
+
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
 	}
 }

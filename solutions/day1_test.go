@@ -11,7 +11,11 @@ var input = `3   4
 
 func TestPart1(t *testing.T) {
 	day := Day1{}
-	result := day.Part1(input)
+	result, err := day.Part1(input)
+
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	if result != "11" {
 		t.Fatalf("result is incorrect, was %s, expected 11", result)
@@ -20,7 +24,11 @@ func TestPart1(t *testing.T) {
 
 func TestPart2(t *testing.T) {
 	day := Day1{}
-	result := day.Part2(input)
+	result, err := day.Part2(input)
+
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	if result != "31" {
 		t.Fatalf("result is incorrect, was %s, expected 31", result)

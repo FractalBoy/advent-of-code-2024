@@ -3,7 +3,6 @@ package solutions
 import (
 	"fmt"
 	"math"
-	"os"
 	"sort"
 	"strconv"
 	"strings"
@@ -11,7 +10,7 @@ import (
 
 type Day1 struct{}
 
-func parseInput(input string) ([]int, []int) {
+func parseInput(input string) ([]int, []int, error) {
 	lines := strings.Split(input, "\n")
 
 	left := []int{}
@@ -28,8 +27,7 @@ func parseInput(input string) ([]int, []int) {
 			num, err := strconv.Atoi(parts[j])
 
 			if err != nil {
-				fmt.Fprintf(os.Stderr, "failed to convert %s to int: %s", parts[j], err)
-				os.Exit(1)
+				return nil, nil, fmt.Errorf("failed to convert \"%s\" to int: %s", parts[j], err)
 			}
 
 			if len(left) == i {
@@ -40,11 +38,15 @@ func parseInput(input string) ([]int, []int) {
 		}
 	}
 
-	return left, right
+	return left, right, nil
 }
 
-func (d Day1) Part1(input string) string {
-	left, right := parseInput(input)
+func (d Day1) Part1(input string) (string, error) {
+	left, right, err := parseInput(input)
+
+	if err != nil {
+		return "", err
+	}
 
 	sort.Slice(left, func(i, j int) bool {
 		return left[i] < left[j]
@@ -60,11 +62,16 @@ func (d Day1) Part1(input string) string {
 		sum += math.Abs(float64(right[i] - left[i]))
 	}
 
-	return strconv.FormatFloat(sum, 'f', 0, 64)
+	return strconv.FormatFloat(sum, 'f', 0, 64), nil
 }
 
-func (d Day1) Part2(input string) string {
-	left, right := parseInput(input)
+func (d Day1) Part2(input string) (string, error) {
+	left, right, err := parseInput(input)
+
+	if err != nil {
+		return "", err
+	}
+
 	freq := make(map[int]int)
 
 	for i := 0; i < len(right); i++ {
@@ -89,5 +96,5 @@ func (d Day1) Part2(input string) string {
 		sum += left[i] * count
 	}
 
-	return strconv.Itoa(sum)
+	return strconv.Itoa(sum), nil
 }
