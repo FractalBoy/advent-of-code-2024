@@ -1,41 +1,28 @@
 package solutions
 
 import (
-	"fmt"
 	"math"
 	"sort"
 	"strconv"
-	"strings"
+
+	"github.com/FractalBoy/advent-of-code-2024/utils"
 )
 
 type Day1 struct{}
 
 func parseInput(input string) ([]int, []int, error) {
-	lines := strings.Split(input, "\n")
-
 	left := []int{}
 	right := []int{}
 
+	lines, err := utils.SplitLinesIntFields(input)
+
+	if err != nil {
+		return nil, nil, err
+	}
+
 	for i := 0; i < len(lines); i++ {
-		parts := strings.Split(lines[i], " ")
-
-		for j := 0; j < len(parts); j++ {
-			if parts[j] == "" {
-				continue
-			}
-
-			num, err := strconv.Atoi(parts[j])
-
-			if err != nil {
-				return nil, nil, fmt.Errorf("failed to convert \"%s\" to int: %s", parts[j], err)
-			}
-
-			if len(left) == i {
-				left = append(left, num)
-			} else if len(right) == i {
-				right = append(right, num)
-			}
-		}
+		left = append(left, lines[i][0])
+		right = append(right, lines[i][1])
 	}
 
 	return left, right, nil
