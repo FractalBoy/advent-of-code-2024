@@ -13,19 +13,18 @@ func dayUrl(day int) string {
 	return fmt.Sprintf("https://adventofcode.com/2024/day/%d/input", day)
 }
 
-func DayInput(day int) string {
+func DayInput(day int) (string, error) {
 	filename := fmt.Sprintf("inputs/day%d.txt", day)
 	input, err := os.ReadFile(filename)
 
 	if err == nil {
-		return string(input)
+		return string(input), nil
 	}
 
 	err = godotenv.Load(".env")
 
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "error loading .env file: %s\n", err)
-		os.Exit(1)
+		return "", fmt.Errorf("error loading .env file: %s", err)
 	}
 
 	cookie := http.Cookie{Name: "session", Value: os.Getenv("session")}
@@ -33,7 +32,7 @@ func DayInput(day int) string {
 	req, err := http.NewRequest(http.MethodGet, dayUrl(day), nil)
 
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "error making http request: %s\n", err)
+		fmt.Fprintf(os.Stderr, "error making http request: %s", err)
 		os.Exit(1)
 	}
 
@@ -42,18 +41,17 @@ func DayInput(day int) string {
 	res, err := http.DefaultClient.Do(req)
 
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "error making http request: %s\n", err)
-		os.Exit(1)
+		return "", fmt.Errorf("error making http request: %s", err)
 	}
 
 	resBody, err := io.ReadAll(res.Body)
 
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "client: could not read response body: %s\n", err)
-		os.Exit(1)
+		return "", fmt.Errorf("client: could not read response body: %s", err)
 	}
 
+	os.Mkdir("inputs", 0755)
 	os.WriteFile(filename, []byte(resBody), 0644)
 
-	return string(resBody)
+	return string(resBody), nil
 }

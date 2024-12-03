@@ -35,7 +35,12 @@ func main() {
 		os.Exit(1)
 	}
 
-	input := aoc.DayInput(*dayNum)
+	input, err := aoc.DayInput(*dayNum)
+
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
 
 	if !*part1 && !*part2 {
 		fmt.Fprintln(os.Stderr, "No part specified.")
