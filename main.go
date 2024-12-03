@@ -25,6 +25,7 @@ func main() {
 	var days map[int]aoc.Day = make(map[int]aoc.Day)
 
 	days[1] = solutions.Day1{}
+	days[2] = solutions.Day2{}
 
 	day, ok := days[*dayNum]
 
