@@ -1,9 +1,33 @@
 package utils
 
 import (
+	"os"
 	"strconv"
 	"strings"
 )
+
+func ReadDotEnv() error {
+	dotenv, err := os.ReadFile(".env")
+
+	if err != nil {
+		return err
+	}
+
+	lines := SplitLinesFieldsWithDelim(string(dotenv), "=")
+
+	for _, line := range lines {
+		key := line[0]
+		value := line[1]
+
+		_, exists := os.LookupEnv(key)
+
+		if !exists {
+			os.Setenv(key, value)
+		}
+	}
+
+	return nil
+}
 
 func SplitLines(str string) []string {
 	lines := strings.Split(str, "\n")
@@ -18,12 +42,12 @@ func SplitLines(str string) []string {
 	return nonEmptyLines
 }
 
-func splitLinesFieldsWithFunc[T any](str string, conv func(string) (T, error)) ([][]T, error) {
+func splitLinesFieldsWithFunc[T any](str string, delim string, conv func(string) (T, error)) ([][]T, error) {
 	lines := SplitLines(str)
 	linesFields := [][]T{}
 
 	for i := 0; i < len(lines); i++ {
-		fields := strings.Split(lines[i], " ")
+		fields := strings.Split(lines[i], delim)
 		nonEmptyFields := []T{}
 
 		for j := 0; j < len(fields); j++ {
@@ -44,18 +68,31 @@ func splitLinesFieldsWithFunc[T any](str string, conv func(string) (T, error)) (
 	return linesFields, nil
 }
 
-func SplitLinesFields(str string) ([][]string, error) {
-	return splitLinesFieldsWithFunc(str, func(s string) (string, error) { return s, nil })
+func SplitLinesFieldsWithDelim(str string, delim string) [][]string {
+	lines, _ := splitLinesFieldsWithFunc(str, delim, func(s string) (string, error) { return s, nil })
+	return lines
 }
 
-func SplitLinesIntFields(str string) ([][]int, error) {
-	return splitLinesFieldsWithFunc(str, func(s string) (int, error) {
+func SplitLinesFields(str string) [][]string {
+	return SplitLinesFieldsWithDelim(str, " ")
+}
+
+func SplitLinesIntFieldsWithDelim(str string, delim string) ([][]int, error) {
+	return splitLinesFieldsWithFunc(str, delim, func(s string) (int, error) {
 		return strconv.Atoi(s)
 	})
 }
 
-func SplitLinesFloatFields(str string) ([][]float64, error) {
-	return splitLinesFieldsWithFunc(str, func(s string) (float64, error) {
+func SplitLinesIntFields(str string) ([][]int, error) {
+	return SplitLinesIntFieldsWithDelim(str, " ")
+}
+
+func SplitLinesFloatFieldsWithDelim(str string, delim string) ([][]float64, error) {
+	return splitLinesFieldsWithFunc(str, delim, func(s string) (float64, error) {
 		return strconv.ParseFloat(s, 64)
 	})
+}
+
+func SplitLinesFloatFields(str string) ([][]float64, error) {
+	return SplitLinesFloatFieldsWithDelim(str, " ")
 }

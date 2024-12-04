@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/joho/godotenv"
+	"github.com/FractalBoy/advent-of-code-2024/utils"
 )
 
 func dayUrl(day int) string {
@@ -21,7 +21,7 @@ func DayInput(day int) (string, error) {
 		return string(input), nil
 	}
 
-	err = godotenv.Load(".env")
+	err = utils.ReadDotEnv()
 
 	if err != nil {
 		return "", fmt.Errorf("error loading .env file: %s", err)
