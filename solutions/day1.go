@@ -20,9 +20,9 @@ func parseInput(input string) ([]int, []int, error) {
 		return nil, nil, err
 	}
 
-	for i := 0; i < len(lines); i++ {
-		left = append(left, lines[i][0])
-		right = append(right, lines[i][1])
+	for _, line := range lines {
+		left = append(left, line[0])
+		right = append(right, line[1])
 	}
 
 	return left, right, nil
@@ -61,26 +61,26 @@ func (d Day1) Part2(input string) (string, error) {
 
 	freq := make(map[int]int)
 
-	for i := 0; i < len(right); i++ {
-		count, ok := freq[right[i]]
+	for _, distance := range right {
+		count, ok := freq[distance]
 
 		if ok {
-			freq[right[i]] = count + 1
+			freq[distance] = count + 1
 		} else {
-			freq[right[i]] = 1
+			freq[distance] = 1
 		}
 	}
 
 	sum := 0
 
-	for i := 0; i < len(left); i++ {
-		count, ok := freq[left[i]]
+	for _, distance := range left {
+		count, ok := freq[distance]
 
 		if !ok {
 			continue
 		}
 
-		sum += left[i] * count
+		sum += distance * count
 	}
 
 	return strconv.Itoa(sum), nil

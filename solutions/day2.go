@@ -51,8 +51,8 @@ func (d Day2) Part1(input string) (string, error) {
 
 	safeCount := 0
 
-	for i := 0; i < len(reports); i++ {
-		if isReportSafe(reports[i]) {
+	for _, report := range reports {
+		if isReportSafe(report) {
 			safeCount++
 		}
 	}
@@ -69,8 +69,7 @@ func (d Day2) Part2(input string) (string, error) {
 
 	safeCount := 0
 
-	for i := 0; i < len(reports); i++ {
-		report := reports[i]
+	for _, report := range reports {
 		for j := 0; j < len(report); j++ {
 			permutation := []int{}
 

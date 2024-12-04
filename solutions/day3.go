@@ -2,8 +2,6 @@ package solutions
 
 import (
 	"strconv"
-
-	"github.com/FractalBoy/advent-of-code-2024/utils"
 )
 
 type Day3 struct{}
@@ -29,62 +27,59 @@ func calculateResults(input string, allowDisable bool) (string, error) {
 		currNum2 = ""
 	}
 
-	lines := utils.SplitLines(input)
 	sum := 0
 
-	for i := 0; i < len(lines); i++ {
-		for j := 0; j < len(lines[i]); j++ {
-			if allowDisable && j < len(lines[i])-1 && lines[i][j:j+2] == "do" {
-				if j < len(lines[i])-4 && lines[i][j+2:j+5] == "n't" {
-					disableCalc = true
-					j += 4
+	for i := 0; i < len(input); i++ {
+		if allowDisable && i < len(input)-1 && input[i:i+2] == "do" {
+			if i < len(input)-4 && input[i+2:i+5] == "n't" {
+				disableCalc = true
+				i += 4
 
-					continue
-				} else {
-					disableCalc = false
-					j++
-				}
-			}
-
-			if disableCalc {
 				continue
-			}
-
-			if !sawMulOpenParen {
-				if j < len(lines[i])-3 && lines[i][j:j+4] == "mul(" {
-					sawMulOpenParen = true
-					j += 3
-				}
-			} else if !sawNum1 || sawNum1 && !sawComma {
-				if lines[i][j] >= '0' && lines[i][j] <= '9' {
-					sawNum1 = true
-					currNum1 += string(lines[i][j])
-				} else if lines[i][j] == ',' {
-					sawComma = true
-				} else {
-					resetState()
-				}
 			} else {
-				if lines[i][j] >= '0' && lines[i][j] <= '9' {
-					currNum2 += string(lines[i][j])
-				} else if lines[i][j] == ')' {
-					num1, err := strconv.Atoi(currNum1)
+				disableCalc = false
+				i++
+			}
+		}
 
-					if err != nil {
-						return "", nil
-					}
-					num2, err := strconv.Atoi(currNum2)
+		if disableCalc {
+			continue
+		}
 
-					if err != nil {
-						return "", nil
-					}
+		if !sawMulOpenParen {
+			if i < len(input)-3 && input[i:i+4] == "mul(" {
+				sawMulOpenParen = true
+				i += 3
+			}
+		} else if !sawNum1 || sawNum1 && !sawComma {
+			if input[i] >= '0' && input[i] <= '9' {
+				sawNum1 = true
+				currNum1 += string(input[i])
+			} else if input[i] == ',' {
+				sawComma = true
+			} else {
+				resetState()
+			}
+		} else {
+			if input[i] >= '0' && input[i] <= '9' {
+				currNum2 += string(input[i])
+			} else if input[i] == ')' {
+				num1, err := strconv.Atoi(currNum1)
 
-					sum += num1 * num2
-
-					resetState()
-				} else {
-					resetState()
+				if err != nil {
+					return "", nil
 				}
+				num2, err := strconv.Atoi(currNum2)
+
+				if err != nil {
+					return "", nil
+				}
+
+				sum += num1 * num2
+
+				resetState()
+			} else {
+				resetState()
 			}
 		}
 	}
