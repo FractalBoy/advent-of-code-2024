@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"os"
 	"strconv"
 	"strings"
@@ -15,7 +16,12 @@ func ReadDotEnv() error {
 
 	lines := SplitLinesFieldsWithDelim(string(dotenv), "=")
 
-	for _, line := range lines {
+	for i, line := range lines {
+		if len(line) != 2 {
+			actualLine := strings.Join(line, "=")
+			return fmt.Errorf("error on line %d (%s): number of fields is not 2", i, actualLine)
+		}
+
 		key := line[0]
 		value := line[1]
 
