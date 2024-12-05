@@ -10,7 +10,7 @@ import (
 
 type Day1 struct{}
 
-func parseInput(input string) ([]int, []int, error) {
+func parseDay1Input(input string) ([]int, []int, error) {
 	left := []int{}
 	right := []int{}
 
@@ -29,7 +29,7 @@ func parseInput(input string) ([]int, []int, error) {
 }
 
 func (d Day1) Part1(input string) (string, error) {
-	left, right, err := parseInput(input)
+	left, right, err := parseDay1Input(input)
 
 	if err != nil {
 		return "", err
@@ -53,7 +53,7 @@ func (d Day1) Part1(input string) (string, error) {
 }
 
 func (d Day1) Part2(input string) (string, error) {
-	left, right, err := parseInput(input)
+	left, right, err := parseDay1Input(input)
 
 	if err != nil {
 		return "", err

@@ -6,16 +6,14 @@ import (
 )
 
 func SplitLines(str string) []string {
-	lines := strings.Split(str, "\n")
-	nonEmptyLines := []string{}
+	split := strings.Split(str, "\n")
 
-	for i := 0; i < len(lines); i++ {
-		if lines[i] != "" {
-			nonEmptyLines = append(nonEmptyLines, lines[i])
-		}
+	// Remove last line if it's just a newline
+	if split[len(split)-1] == "" {
+		split = split[0 : len(split)-1]
 	}
 
-	return nonEmptyLines
+	return split
 }
 
 func splitLinesFieldsWithFunc[T any](str string, delim string, conv func(string) (T, error)) ([][]T, error) {
