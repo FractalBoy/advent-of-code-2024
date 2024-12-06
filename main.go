@@ -29,6 +29,7 @@ func main() {
 	days[3] = solutions.Day3{}
 	days[4] = solutions.Day4{}
 	days[5] = solutions.Day5{}
+	days[6] = solutions.Day6{}
 
 	day, ok := days[*dayNum]
 
