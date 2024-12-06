@@ -62,17 +62,20 @@ func parseDay5Input(input string) ([]OrderingRule, [][]int, error) {
 	return rules, updates, nil
 }
 
-func correctOrder(rules []OrderingRule, update []int) (bool, int, int) {
-	for _, rule := range rules {
-		beforeIndex := slices.Index(update, rule.Before)
-		afterIndex := slices.Index(update, rule.After)
+func sortUpdate(rules []OrderingRule, update []int) {
+	slices.SortFunc(update, func(a int, b int) int {
+		for _, rule := range rules {
+			if rule.Before == a && rule.After == b {
+				return -1
+			}
 
-		if beforeIndex != -1 && afterIndex != -1 && beforeIndex > afterIndex {
-			return false, beforeIndex, afterIndex
+			if rule.Before == b && rule.After == a {
+				return 1
+			}
 		}
-	}
 
-	return true, 0, 0
+		return 0
+	})
 }
 
 func (d Day5) Part1(input string) (string, error) {
@@ -85,9 +88,10 @@ func (d Day5) Part1(input string) (string, error) {
 	sum := 0
 
 	for _, update := range updates {
-		correct, _, _ := correctOrder(rules, update)
+		before := slices.Clone(update)
+		sortUpdate(rules, update)
 
-		if correct {
+		if slices.Equal(before, update) {
 			sum += update[len(update)/2]
 		}
 	}
@@ -105,15 +109,10 @@ func (d Day5) Part2(input string) (string, error) {
 	sum := 0
 
 	for _, update := range updates {
-		correct, beforeIndex, afterIndex := correctOrder(rules, update)
-		wasCorrect := correct
+		before := slices.Clone(update)
+		sortUpdate(rules, update)
 
-		for !correct {
-			update[beforeIndex], update[afterIndex] = update[afterIndex], update[beforeIndex]
-			correct, beforeIndex, afterIndex = correctOrder(rules, update)
-		}
-
-		if !wasCorrect {
+		if !slices.Equal(before, update) {
 			sum += update[len(update)/2]
 		}
 	}
