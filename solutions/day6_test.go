@@ -31,5 +31,5 @@ func TestDay6Part2(t *testing.T) {
 	result, err := day.Part2(day6Input)
 
 	utils.AssertNil(t, err)
-	utils.AssertEqual(t, result, "")
+	utils.AssertEqual(t, result, "6")
 }

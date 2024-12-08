@@ -95,5 +95,57 @@ func (d Day6) Part1(input string) (string, error) {
 }
 
 func (d Day6) Part2(input string) (string, error) {
-	return "", nil
+	guard, myMap := parseDay6Input(input)
+
+	cycles := 0
+
+	for y := 0; y < myMap.Size; y++ {
+		for x := 0; x < myMap.Size; x++ {
+			clonedGuard := Guard{Location: Point{X: guard.Location.X, Y: guard.Location.Y}, Orientation: guard.Orientation}
+
+			obstacles := slices.Clone(myMap.Obstacles)
+			obstacles = append(obstacles, Point{X: x, Y: y})
+
+			visited := []Guard{}
+
+			for clonedGuard.Location.X >= 0 && clonedGuard.Location.X < myMap.Size && clonedGuard.Location.Y >= 0 && clonedGuard.Location.Y < myMap.Size {
+				switch clonedGuard.Orientation {
+				case NORTH:
+					clonedGuard.Location.Y--
+				case SOUTH:
+					clonedGuard.Location.Y++
+				case EAST:
+					clonedGuard.Location.X++
+				case WEST:
+					clonedGuard.Location.X--
+				}
+
+				if slices.Index(obstacles, clonedGuard.Location) != -1 {
+					switch clonedGuard.Orientation {
+					case NORTH:
+						clonedGuard.Orientation = EAST
+						clonedGuard.Location.Y++
+					case SOUTH:
+						clonedGuard.Orientation = WEST
+						clonedGuard.Location.Y--
+					case EAST:
+						clonedGuard.Orientation = SOUTH
+						clonedGuard.Location.X--
+					case WEST:
+						clonedGuard.Orientation = NORTH
+						clonedGuard.Location.X++
+					}
+				} else {
+					if slices.Contains(visited, clonedGuard) {
+						cycles++
+						break
+					}
+
+					visited = append(visited, Guard{Location: Point{X: clonedGuard.Location.X, Y: clonedGuard.Location.Y}, Orientation: clonedGuard.Orientation})
+				}
+			}
+		}
+	}
+
+	return strconv.Itoa(cycles), nil
 }
