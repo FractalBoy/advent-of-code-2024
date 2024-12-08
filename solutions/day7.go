@@ -16,11 +16,6 @@ type Equation struct {
 	RightHandSide []int
 }
 
-const (
-	ADD      = iota
-	MULTIPLY = iota
-)
-
 func parseDay7Input(input string) ([]Equation, error) {
 	lines := utils.SplitLines(input)
 	equations := make([]Equation, len(lines))
