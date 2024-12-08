@@ -109,8 +109,19 @@ func (d Day6) Part2(input string) (string, error) {
 	for _, point := range visited {
 		clonedGuard := Guard{Location: Point{X: guard.Location.X, Y: guard.Location.Y}, Orientation: guard.Orientation}
 
-		obstacles := slices.Clone(map_.Obstacles)
-		obstacles = append(obstacles, point)
+		obstacles := make(map[int]map[int]bool)
+
+		for _, obstacle := range map_.Obstacles {
+			map1, ok := obstacles[obstacle.X]
+			if ok {
+				map1[obstacle.Y] = true
+			} else {
+				obstacles[obstacle.X] = make(map[int]bool)
+				obstacles[obstacle.X][obstacle.Y] = true
+			}
+		}
+
+		obstacles[point.X][point.Y] = true
 
 		guards := make(map[int]map[int]map[int]bool)
 
@@ -126,22 +137,33 @@ func (d Day6) Part2(input string) (string, error) {
 				clonedGuard.Location.X--
 			}
 
-			if slices.Index(obstacles, clonedGuard.Location) != -1 {
-				switch clonedGuard.Orientation {
-				case NORTH:
-					clonedGuard.Orientation = EAST
-					clonedGuard.Location.Y++
-				case SOUTH:
-					clonedGuard.Orientation = WEST
-					clonedGuard.Location.Y--
-				case EAST:
-					clonedGuard.Orientation = SOUTH
-					clonedGuard.Location.X--
-				case WEST:
-					clonedGuard.Orientation = NORTH
-					clonedGuard.Location.X++
+			map1, ok := obstacles[clonedGuard.Location.X]
+			hitObstacle := false
+
+			if ok {
+				exists, ok := map1[clonedGuard.Location.Y]
+
+				if ok && exists {
+					switch clonedGuard.Orientation {
+					case NORTH:
+						clonedGuard.Orientation = EAST
+						clonedGuard.Location.Y++
+					case SOUTH:
+						clonedGuard.Orientation = WEST
+						clonedGuard.Location.Y--
+					case EAST:
+						clonedGuard.Orientation = SOUTH
+						clonedGuard.Location.X--
+					case WEST:
+						clonedGuard.Orientation = NORTH
+						clonedGuard.Location.X++
+					}
+
+					hitObstacle = true
 				}
-			} else {
+			}
+
+			if !hitObstacle {
 				map1, ok := guards[clonedGuard.Location.X]
 
 				if ok {
