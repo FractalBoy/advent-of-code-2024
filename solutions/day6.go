@@ -121,7 +121,14 @@ func (d Day6) Part2(input string) (string, error) {
 			}
 		}
 
-		obstacles[point.X][point.Y] = true
+		map1, ok := obstacles[point.X]
+
+		if ok {
+			map1[point.Y] = true
+		} else {
+			obstacles[point.X] = make(map[int]bool)
+			obstacles[point.X][point.Y] = true
+		}
 
 		guards := make(map[int]map[int]map[int]bool)
 
